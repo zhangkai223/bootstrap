@@ -5,7 +5,7 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./dom/data.js'), require('./dom/event-handler.js'), require('./dom/manipulator.js'), require('popper.js'), require('./dom/selector-engine.js')) :
-  typeof define === 'function' && define.amd ? define(['./dom/data.js', './dom/event-handler.js', './dom/manipulator.js', 'popper.js', './dom/selector-engine.js'], factory) :
+  typeof define === 'function' && define.amd ? define(['./dom/data', './dom/event-handler', './dom/manipulator', 'popper.js', './dom/selector-engine'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Tooltip = factory(global.Data, global.EventHandler, global.Manipulator, global.Popper, global.SelectorEngine));
 }(this, (function (Data, EventHandler, Manipulator, Popper, SelectorEngine) { 'use strict';
 
@@ -155,6 +155,8 @@
       callback();
     }
   };
+
+  var isRTL = document.documentElement.dir === 'rtl';
 
   /**
    * --------------------------------------------------------------------------
@@ -314,6 +316,7 @@
     container: '(string|element|boolean)',
     fallbackPlacement: '(string|array)',
     boundary: '(string|element)',
+    customClass: '(string|function)',
     sanitize: 'boolean',
     sanitizeFn: '(null|function)',
     allowList: 'object',
@@ -322,9 +325,9 @@
   var AttachmentMap = {
     AUTO: 'auto',
     TOP: 'top',
-    RIGHT: 'right',
+    RIGHT: isRTL ? 'left' : 'right',
     BOTTOM: 'bottom',
-    LEFT: 'left'
+    LEFT: isRTL ? 'right' : 'left'
   };
   var Default = {
     animation: true,
@@ -339,6 +342,7 @@
     container: false,
     fallbackPlacement: 'flip',
     boundary: 'scrollParent',
+    customClass: '',
     sanitize: true,
     sanitizeFn: null,
     allowList: DefaultAllowlist,
@@ -509,10 +513,18 @@
 
         EventHandler__default['default'].trigger(this.element, this.constructor.Event.INSERTED);
         this._popper = new Popper__default['default'](this.element, tip, this._getPopperConfig(attachment));
-        tip.classList.add(CLASS_NAME_SHOW); // If this is a touch-enabled device we add extra
+        tip.classList.add(CLASS_NAME_SHOW);
+        var customClass = typeof this.config.customClass === 'function' ? this.config.customClass() : this.config.customClass;
+
+        if (customClass) {
+          var _tip$classList;
+
+          (_tip$classList = tip.classList).add.apply(_tip$classList, customClass.split(' '));
+        } // If this is a touch-enabled device we add extra
         // empty mouseover listeners to the body's immediate children;
         // only needed because of broken event delegation on iOS
         // https://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
+
 
         if ('ontouchstart' in document.documentElement) {
           var _ref;
@@ -671,6 +683,18 @@
       }
 
       return title;
+    };
+
+    _proto.updateAttachment = function updateAttachment(attachment) {
+      if (attachment === 'right') {
+        return 'end';
+      }
+
+      if (attachment === 'left') {
+        return 'start';
+      }
+
+      return attachment;
     } // Private
     ;
 
@@ -704,7 +728,7 @@
     };
 
     _proto._addAttachmentClass = function _addAttachmentClass(attachment) {
-      this.getTipElement().classList.add(CLASS_PREFIX + "-" + attachment);
+      this.getTipElement().classList.add(CLASS_PREFIX + "-" + this.updateAttachment(attachment));
     };
 
     _proto._getOffset = function _getOffset() {
