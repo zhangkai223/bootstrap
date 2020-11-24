@@ -1,11 +1,11 @@
 /*!
-  * Bootstrap popover.js v5.0.0-alpha3 (https://getbootstrap.com/)
+  * Bootstrap popover.js v5.0.0-beta1 (https://getbootstrap.com/)
   * Copyright 2011-2020 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./dom/data.js'), require('./dom/selector-engine.js'), require('./tooltip.js')) :
-  typeof define === 'function' && define.amd ? define(['./dom/data.js', './dom/selector-engine.js', './tooltip.js'], factory) :
+  typeof define === 'function' && define.amd ? define(['./dom/data', './dom/selector-engine', './tooltip'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Popover = factory(global.Data, global.SelectorEngine, global.Tooltip));
 }(this, (function (Data, SelectorEngine, Tooltip) { 'use strict';
 
@@ -17,7 +17,7 @@
 
   /**
    * --------------------------------------------------------------------------
-   * Bootstrap (v5.0.0-alpha3): util/index.js
+   * Bootstrap (v5.0.0-beta1): util/index.js
    * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
    * --------------------------------------------------------------------------
    */
@@ -55,7 +55,6 @@
    */
 
   var NAME = 'popover';
-  var VERSION = '5.0.0-alpha3';
   var DATA_KEY = 'bs.popover';
   var EVENT_KEY = "." + DATA_KEY;
   var CLASS_PREFIX = 'bs-popover';
@@ -116,7 +115,7 @@
       var content = this._getContent();
 
       if (typeof content === 'function') {
-        content = content.call(this.element);
+        content = content.call(this._element);
       }
 
       this.setElementContent(SelectorEngine__default['default'].findOne(SELECTOR_CONTENT, tip), content);
@@ -129,7 +128,7 @@
     };
 
     _proto._getContent = function _getContent() {
-      return this.element.getAttribute('data-bs-content') || this.config.content;
+      return this._element.getAttribute('data-bs-content') || this.config.content;
     };
 
     _proto._cleanTipClass = function _cleanTipClass() {
@@ -171,18 +170,9 @@
       });
     };
 
-    Popover.getInstance = function getInstance(element) {
-      return Data__default['default'].getData(element, DATA_KEY);
-    };
-
     _createClass(Popover, null, [{
-      key: "VERSION",
-      // Getters
-      get: function get() {
-        return VERSION;
-      }
-    }, {
       key: "Default",
+      // Getters
       get: function get() {
         return Default;
       }
