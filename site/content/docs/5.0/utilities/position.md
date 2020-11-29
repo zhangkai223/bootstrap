@@ -68,6 +68,22 @@ This class applies the transformations `translateX(-50%)` and `translateY(-50%)`
 </div>
 {{< /example >}}
 
+By adding `.translate-middle-x` or `.translate-middle-y` classes, elements can be positioned only in horizontal or vertical direction.
+
+{{< example class="bd-example-position-utils" >}}
+<div class="position-relative">
+  <div class="position-absolute top-0 left-0"></div>
+  <div class="position-absolute top-0 left-50 translate-middle-x"></div>
+  <div class="position-absolute top-0 right-0"></div>
+  <div class="position-absolute top-50 left-0 translate-middle-y"></div>
+  <div class="position-absolute top-50 left-50 translate-middle"></div>
+  <div class="position-absolute top-50 right-0 translate-middle-y"></div>
+  <div class="position-absolute bottom-0 left-0"></div>
+  <div class="position-absolute bottom-0 left-50 translate-middle-x"></div>
+  <div class="position-absolute bottom-0 right-0"></div>
+</div>
+{{< /example >}}
+
 ## Examples
 
 Here are some real life examples of these classes:
