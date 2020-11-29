@@ -20,6 +20,8 @@
 
 .toast-container {
   display: grid;
+  width: max-content;
+  max-width: 100%;
   pointer-events: none;
   grid-gap: $toast-spacing;
 }
